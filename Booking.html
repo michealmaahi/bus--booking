@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Bus Booking & Tracking</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #000000;
+            background-color: #FFF5F5;
+        }
+
+        h1, h2 {
+            margin-bottom: 1rem;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #B22222;
+            color: #FFFFF0;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #8B0000;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #8B0000;
+            color: #FFFFF0;
+        }
+
+        .header .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-menu a {
+            color: #FFFFF0;
+            text-decoration: none;
+            margin-left: 1rem;
+            font-weight: bold;
+        }
+
+        .nav-menu a:hover {
+            text-decoration: underline;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(90deg, #DC143C, #FF7F50);
+            color: #FFFFF0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .hero .search-bar {
+            margin-top: 2rem;
+        }
+
+        .hero input {
+            padding: 0.7rem;
+            width: 300px;
+            border: 2px solid #FFFFF0;
+            border-radius: 5px;
+            margin-right: 0.5rem;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 2rem;
+            background-color: #FFF5F5;
+        }
+
+        .features h2 {
+            text-align: center;
+            color: #B22222;
+            font-weight: bold;
+        }
+
+        .features-grid {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            background-color: #DC143C;
+            color: #FFFFF0;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            width: 200px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Booking Section */
+        .booking {
+            padding: 2rem;
+            background-color: #FF7F50;
+            color: #FFFFF0;
+            text-align: center;
+            position: relative;
+        }
+
+        .booking h2 {
+            font-weight: bold;
+            color: #8B0000;
+        }
+
+        .booking form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .booking input {
+            display: block;
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border: 2px solid #FFFFF0;
+            border-radius: 5px;
+            background-color: #FFF5F5;
+        }
+
+        .booking .popup {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #DC143C;
+            color: #FFFFF0;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            animation: popup-fade 5s linear;
+        }
+
+        @keyframes popup-fade {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .booking .helpline {
+            margin-top: 2rem;
+        }
+
+        .booking .helpline a {
+            display: inline-block;
+            margin: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #B22222;
+            color: #FFFFF0;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .booking .helpline a:hover {
+            background-color: #8B0000;
+        }
+
+        /* Tracking Section */
+        .tracking {
+            padding: 2rem;
+            background-color: #DC143C;
+            text-align: center;
+            color: #FFFFF0;
+            position: relative;
+        }
+
+        .tracking h2 {
+            font-weight: bold;
+            color: #FFFFF0;
+        }
+
+        .tracking-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tracking input {
+            padding: 0.7rem;
+            width: 100%;
+            border: 2px solid #FFFFF0;
+            border-radius: 5px;
+            background-color: #FFF5F5;
+        }
+
+        #map {
+            margin-top: 1rem;
+            height: 400px;
+            background-color: #EEE;
+            border: 2px solid #8B0000;
+            border-radius: 5px;
+        }
+
+        /* Bus Animation */
+       
+                /* Bus Animation */
+        .bus-animation {
+            width: 100%;
+            position: relative;
+            height: 80px;
+            background-color: #FFF5F5;
+            overflow: hidden;
+        }
+
+        .bus {
+            position: absolute;
+            width: 100px; /* Adjust the bus size */
+            height: auto;
+            animation: bus-move 5s linear infinite;
+        }
+
+
+                /* Bus Animation */
+            .bus-stop-animation {
+            width: 100%;
+            position: relative;
+           
+            background-color: #FFF5F5;
+            overflow: hidden;
+        }
+
+        .bus-stop {
+            position: absolute;
+            width: 100px; /* Adjust the bus size */
+            height: auto;
+            animation: bus-stop linear infinite;
+        }
+
+
+        /* Animation for smooth left-to-right movement */
+        @keyframes bus-move {
+            0% {
+                left: -100px; /* Start off-screen */
+            }
+            100% {
+                left: 100%; /* Move completely off the right side */
+            }
+        }
+
+        /* Footer Section */
+        .footer {
+            padding: 1.5rem;
+            background-color: #8B0000;
+            color: #FFFFF0;
+            text-align: center;
+        }
+
+        .footer .social-links a {
+            color: #FFFFF0;
+            text-decoration: none;
+            margin: 0 0.5rem;
+            font-weight: bold;
+        }
+
+        .footer .social-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo">BusEase</div>
+        <nav class="nav-menu">
+            <a href="#">Home</a>
+            <a href="#">Book a Ticket</a>
+            <a href="#">Track Bus</a>
+            <a href="#">Contact Us</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Welcome to BusEase</h1>
+        <p>Your ultimate solution for online bus booking and real-time tracking!</p>
+        <div class="search-bar">
+            <input type="text" placeholder="Search Bus Routes...">
+            <button>Search</button>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Our Features</h2>
+        <div class="features-grid">
+            <div class="feature-item">Easy Booking</div>
+            <div class="feature-item">Real-Time Tracking</div>
+            <div class="feature-item">Secure Payments</div>
+        </div>
+    </section>
+
+    <section class="booking">
+        <h2>Book Your Tickets</h2>
+        <div class="popup">Limited Offer: Flat 20% off on your first booking!</div>
+        <form>
+            <input type="text" placeholder="Enter your source">
+            <input type="text" placeholder="Enter your destination">
+            <input type="date">
+            <button>Book Now</button>
+        </form>
+        <div class="helpline">
+            <a href="tel:+123456789">Call Us</a>
+            <a href="sms:+123456789">Message Us</a>
+            <a href="#feedback">Feedback</a>
+        </div>
+    </section>
+
+    <section class="tracking">
+        <h2>Track Your Bus</h2>
+        <div class="tracking-container">
+            <input type="text" placeholder="Enter your bus number">
+            <div id="map"></div>
+        </div>
+        
+        <!-- Bus Animation Section -->
+        <div class="bus-animation">
+            <img src="bus-journey.gif" alt="Moving Bus" class="bus">
+        </div>
+
+        <div class="bus-stop-animation">
+            <img src="bus-stop.gif" alt="Bus stop" class="bus-stop">
+        </div>
+
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2025 BusEase. All Rights Reserved.</p>
+        <div class="social-links">
+            <a href="#">Facebook</a>
+            <a href="#">Twitter</a>
+            <a href="#">Instagram</a>
+        </div>
+    </footer>
+
+    <script>
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 20.5937, lng: 78.9629 }, // Center on India
+                zoom: 5,
+            });
+        }
+        window.onload = initMap;
+    </script>
+</body>
+
+</html>
